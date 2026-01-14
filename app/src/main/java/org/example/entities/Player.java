@@ -23,5 +23,10 @@ public class Player{
     return this.heading;
   }
 
+  public void move(double dx, double dy){
+    this.posX += dx;
+    this.posY += dy;
+  }
+
 
 }
