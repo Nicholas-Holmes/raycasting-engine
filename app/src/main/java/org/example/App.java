@@ -47,9 +47,9 @@ public class App extends Application{
     for (int i = 0; i < 60; i++){
       double[] sliceData = vController.calculateColumn(i);
       if (sliceData[0] == 1){
-        gc.setFill(Color.GREY);
+        gc.setFill(Color.DARKSLATEGRAY);
       } else {
-        gc.setFill(Color.BLACK);
+        gc.setFill(Color.LIGHTSLATEGREY);
       }
       gc.fillRect(sliceData[1],sliceData[2],sliceData[3],sliceData[4]);//drawing the slice
     }
