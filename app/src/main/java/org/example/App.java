@@ -10,10 +10,12 @@ import com.sun.prism.paint.Paint;
 import org.example.entities.Player;
 import org.example.controllers.ViewController;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -33,6 +35,32 @@ public class App extends Application{
     StackPane root = new StackPane(canvas);
     Scene scene = new Scene(root, WIDTH, HEIGHT);
 
+    scene.setOnKeyPressed(event -> {
+      KeyCode code = event.getCode();
+      switch(code){
+        case KeyCode.W:
+          vController.move(0, -10); 
+          System.out.println("Moved forward.");
+        break;
+
+        case KeyCode.S:
+          vController.move(0, +10); 
+          System.out.println("Moved backwards.");
+        break;
+
+        case KeyCode.A:
+          vController.rotate("left");
+        break;
+
+        case KeyCode.D:
+          vController.rotate("right");
+        break;
+
+        default:
+          break;
+      }
+    });
+
     stage.setTitle("Raycaster");
     stage.setScene(scene);
     stage.show();
@@ -43,16 +71,24 @@ public class App extends Application{
     System.out.println(player.getPosX() + " " + player.getPosY() + " " + player.getHeading());
     //TODO: Put all logic below inside a controller method so we can iterate over an array of rays 
     //TODO:and have the below data returned here so we can draw each slice in order left to right.
-    
-    for (int i = 0; i < 60; i++){
-      double[] sliceData = vController.calculateColumn(i);
-      if (sliceData[0] == 1){
-        gc.setFill(Color.DARKSLATEGRAY);
-      } else {
-        gc.setFill(Color.LIGHTSLATEGREY);
+
+    new AnimationTimer(){
+      @Override
+      public void handle(long now){
+        gc.clearRect(0,0,WIDTH,HEIGHT);
+        for (int i = 0; i < 60; i++){
+          double[] sliceData = vController.calculateColumn(i);
+          if (sliceData[0] == 1){
+            gc.setFill(Color.DARKSLATEGRAY);
+          } else {
+            gc.setFill(Color.LIGHTSLATEGREY);
+          }
+          gc.fillRect(sliceData[1],sliceData[2],sliceData[3],sliceData[4]);//drawing the slice
+          
+        }
+
       }
-      gc.fillRect(sliceData[1],sliceData[2],sliceData[3],sliceData[4]);//drawing the slice
-    }
+    }.start();
   }
 
   public static void main(String[] args) {

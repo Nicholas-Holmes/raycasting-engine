@@ -15,6 +15,14 @@ public class ViewController{
     this.player = vModel.getPlayer();
   }
 
+  public void move(double dx, double dy){
+    player.move(dx, dy);
+  }
+
+  public void rotate(String direction){
+    player.rotate(direction);
+  }
+
 
   public double[] calculateColumn(int i){
     double rayAngle = player.getHeading() - ((Math.PI/3) / 2) + i * angleStep; 
