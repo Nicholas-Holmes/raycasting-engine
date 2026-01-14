@@ -4,6 +4,9 @@
 package org.example;
 
 import org.example.models.ViewModel;
+
+import com.sun.prism.paint.Paint;
+
 import org.example.entities.Player;
 import org.example.controllers.ViewController;
 
@@ -12,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class App extends Application{
@@ -42,7 +46,12 @@ public class App extends Application{
     
     for (int i = 0; i < 60; i++){
       double[] sliceData = vController.calculateColumn(i);
-      gc.fillRect(sliceData[0],sliceData[1],sliceData[2],sliceData[3]);//drawing the slice
+      if (sliceData[0] == 1){
+        gc.setFill(Color.GREY);
+      } else {
+        gc.setFill(Color.BLACK);
+      }
+      gc.fillRect(sliceData[1],sliceData[2],sliceData[3],sliceData[4]);//drawing the slice
     }
   }
 
