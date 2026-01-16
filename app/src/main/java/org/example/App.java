@@ -74,6 +74,8 @@ public class App extends Application{
     System.out.println(player.getPosX() + " " + player.getPosY() + " " + player.getHeading());
     //TODO: Add check for player position on grid corner and nudge them off of it. 
     //TODO: So hopefully we can reliably get correct rendering as the player moves around. 
+    //TODO: When player is on a gridline offset the player slightly in the direction of their heading.
+    //TODO: Hopefully this will fix the weird rendering behavior.
 
     new AnimationTimer(){
       @Override
