@@ -8,6 +8,9 @@ import org.example.models.ViewModel;
 import com.sun.prism.paint.Paint;
 
 import org.example.entities.Player;
+
+import java.util.Arrays;
+
 import org.example.controllers.ViewController;
 
 import javafx.animation.AnimationTimer;
@@ -69,8 +72,8 @@ public class App extends Application{
     gc.clearRect(0, 0, WIDTH, HEIGHT);
     Player player = vModel.getPlayer();
     System.out.println(player.getPosX() + " " + player.getPosY() + " " + player.getHeading());
-    //TODO: Put all logic below inside a controller method so we can iterate over an array of rays 
-    //TODO:and have the below data returned here so we can draw each slice in order left to right.
+    //TODO: Add check for player position on grid corner and nudge them off of it. 
+    //TODO: So hopefully we can reliably get correct rendering as the player moves around. 
 
     new AnimationTimer(){
       @Override

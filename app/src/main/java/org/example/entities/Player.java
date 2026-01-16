@@ -7,7 +7,7 @@ public class Player{
   private double heading;
 
   public Player(int posX, int posY){
-    this.posX = posX * 64;
+    this.posX = posX * 64;// + 32;
     this.posY = posY * 64;
     this.heading = ((3 * Math.PI)/2);// + Math.toRadians(5);
   }

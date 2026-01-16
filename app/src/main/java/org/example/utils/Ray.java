@@ -1,17 +1,15 @@
 package org.example.utils;
+import org.example.enums.WallSide;
 
 public class Ray{
-  //private static final double EPSILON = 2e-3;
-  private static final double EPSILON = 0.2;
   private double posX;
   private double posY;
-  private double prevX;
-  private double prevY;
   private double startX;
   private double startY;
   private double heading;
-  private double stepSize = 0.1;
   private double distance = 0;
+  private int[] arrayPos; //stores the row and column(in that order) the ray position maps to
+  private WallSide side = null;
 
   public Ray(double posX, double posY,double heading){
     this.posX = posX;
@@ -19,8 +17,7 @@ public class Ray{
     this.startX = posX;
     this.startY = posY;
     this.heading = heading;
-    this. prevX = 0;
-    this.prevY = 0;
+    this.arrayPos = new int[]{(int)Math.floor(posY/64), (int)Math.floor(posX/64)};
   }
 
   /**
@@ -32,41 +29,49 @@ public class Ray{
     return new double[]{this.posX, this.posY, this.distance, this.heading};
   }
 
-  /**
-   * Determines if the ray collided with a vertical or horizontal wall.
-  * @param hitX x coordinates of the ray's collision.
-  * @param hitY y coordinates of the ray's collision.
-  * @return vertical or horizontal WallFace enum.
-  */
-  public double getCollisionFace(double hitX, double hitY){
-    double rayXDir = Math.cos(this.heading);
-    double rayYDir = Math.sin(this.heading);
-    double nextVertical = rayXDir > 0 ? Math.floor(prevX / 64) * 64 +64
-                                      : Math.floor(prevX / 64) * 64;
-    double nextHorizontal = rayYDir > 0 ? Math.floor(prevY / 64) * 64 + 64
-                                        : Math.floor(prevY / 64) * 64;
-    double distToVertical = Double.POSITIVE_INFINITY;
-    double distToHorizontal = Double.POSITIVE_INFINITY;
+  public int[] getArrayPos(){
+    return this.arrayPos;
+  }
 
-    if (Math.abs(rayXDir) > 1e-8) {
-      distToVertical = (nextVertical - prevX) / rayXDir;
-      if (distToVertical < 0) distToVertical = Double.POSITIVE_INFINITY;
-    }
-
-    if (Math.abs(rayYDir) > 1e-8){
-      distToHorizontal = (nextHorizontal - prevY) / rayYDir;
-      if (distToHorizontal < 0) distToHorizontal = Double.POSITIVE_INFINITY;
-    }
-    return distToVertical < distToHorizontal ? 1:0;
-
+  public WallSide getCollisionSide(){
+    return this.side;
   }
 
   public void step(){
-    this.prevX = this.posX;
-    this.prevY = this.posY;
-    this.posX += Math.cos(heading) * stepSize;
-    this.posY += Math.sin(heading) * stepSize;
-    
+    double rayDirX = Math.cos(this.heading);
+    double rayDirY = Math.sin(this.heading);
+    int arrayDirX = rayDirX > 0 ? 1:-1;
+    int arrayDirY = rayDirY > 0 ? 1:-1;
+    double nextHorizontal = arrayDirY == 1 ? Math.floor(this.posY / 64) * 64 + 64
+                                           : Math.floor(this.posY / 64) * 64 - 0.01;
+    double nextVertical = arrayDirX == 1 ? Math.floor(this.posX / 64) * 64 + 64
+                                         : Math.floor(this.posX / 64) * 64 - 0.01;
+    double distToVertical = Double.POSITIVE_INFINITY;
+    double distToHorizontal = Double.POSITIVE_INFINITY;
+
+    if (rayDirX != 0){
+      distToVertical = (nextVertical - this.posX) /rayDirX; 
+      if (distToVertical < 0){
+        distToVertical = Double.POSITIVE_INFINITY;
+      }
+    }
+
+    if (rayDirY != 0){
+      distToHorizontal = (nextHorizontal - this.posY) / rayDirY;
+      if (distToHorizontal < 0) {
+        distToHorizontal = Double.POSITIVE_INFINITY;
+      }
+    }
+
+    this.side = distToHorizontal > distToVertical ? WallSide.VERTICAL:WallSide.HORIZONTAL;
+    double step = distToHorizontal > distToVertical ? distToVertical:distToHorizontal;
+    if (side == WallSide.HORIZONTAL){
+      this.arrayPos[0] += arrayDirY;
+    } else {
+      this.arrayPos[1] += arrayDirX;
+    }
+    this.posX += rayDirX * step;
+    this.posY += rayDirY * step;
   }
 
 }

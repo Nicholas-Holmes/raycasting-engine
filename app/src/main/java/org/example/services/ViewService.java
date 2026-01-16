@@ -1,20 +1,24 @@
 package org.example.services;
 import org.example.utils.Ray;
+import org.example.enums.WallSide;
 
 public class ViewService{
   
   public static double[] castRay(Ray ray, int[][] map){
     boolean collided = false;
-    double[] pos = new double[4];
+    WallSide collisionSide = null;
     while(!collided){
       ray.step();
-      pos = ray.getData();
-      int cell = map[((int)pos[0])/64][((int)pos[1])/64];
+      int[] indexPos = ray.getArrayPos();
+      int cell = map[indexPos[0]][indexPos[1]];
       if (cell == 1){
         collided = !collided;
+        collisionSide = ray.getCollisionSide();
       }
     }
-    return new double[]{ray.getCollisionFace(pos[0], pos[1]),pos[0],pos[1],pos[2],pos[3]};
+    double[] pos = ray.getData();
+    int side = collisionSide == WallSide.HORIZONTAL ? 0:1;
+    return new double[]{side,pos[0],pos[1],pos[2],pos[3]};
   }
 
 }
