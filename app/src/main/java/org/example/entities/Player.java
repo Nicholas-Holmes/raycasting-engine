@@ -24,6 +24,13 @@ public class Player{
     return this.heading;
   }
 
+  public void positionCheck(){
+    if (this.posX % 64 == 0) this.posX += Math.cos(this.heading) * 0.01;
+    if (this.posY % 64 == 0) this.posY += Math.sin(this.heading) * 0.01;
+
+  }
+      
+
   public void move(double dx, double dy){
     this.posX += dx;
     this.posY += dy;

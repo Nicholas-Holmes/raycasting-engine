@@ -10,6 +10,7 @@ public class Ray{
   private double distance = 0;
   private int[] arrayPos; //stores the row and column(in that order) the ray position maps to
   private WallSide side = null;
+  
 
   public Ray(double posX, double posY,double heading){
     this.posX = posX;
