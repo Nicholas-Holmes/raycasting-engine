@@ -10,6 +10,12 @@ public class Ray{
   private double distance = 0;
   private int[] arrayPos; //stores the row and column(in that order) the ray position maps to
   private WallSide side = null;
+  private double deltaDistX;
+  private double deltaDistY;
+  private int stepX;
+  private int stepY;
+  private double sideDistX;
+  private double sideDistY;
   
 
   public Ray(double posX, double posY,double heading){
@@ -36,6 +42,32 @@ public class Ray{
 
   public WallSide getCollisionSide(){
     return this.side;
+  }
+
+  private void initializeRay(){
+    double rayDirX = Math.cos(this.heading);
+    double rayDirY = Math.sin(this.heading);
+    this.arrayPos = new int[]{(int)(this.posY/64),(int)(this.posX/64)};
+    this.deltaDistX = Math.abs(64/rayDirX);
+    this.deltaDistY = Math.abs(64/rayDirY);
+    if (rayDirX < 0){
+      this.stepX = -1;
+      this.sideDistX = (posX - this.arrayPos[1] * 64) * this.deltaDistX;
+    } else {
+      this.stepX = 1;
+      this.sideDistX = ((this.arrayPos[1] + 1) * 64 - this.posX) * this.deltaDistX;
+    }
+
+    if (rayDirY < 0){
+      this.stepY = -1;
+      this.sideDistY = (this.posY - this.arrayPos[0] * 64) * this.deltaDistY;
+    } else {
+      this.setpY = 1;
+      this.sideDistY = ((this.arrayPos[0] + 1) * 64 - this.posY) * this.deltaDistY;
+
+    }
+
+
   }
 
   public void step(){
