@@ -62,7 +62,7 @@ public class Ray{
       this.stepY = -1;
       this.sideDistY = (this.posY - this.arrayPos[0] * 64) * this.deltaDistY;
     } else {
-      this.setpY = 1;
+      this.stepY = 1;
       this.sideDistY = ((this.arrayPos[0] + 1) * 64 - this.posY) * this.deltaDistY;
 
     }
