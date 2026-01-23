@@ -47,23 +47,25 @@ public class Ray{
   private void initializeRay(){
     double rayDirX = Math.cos(this.heading);
     double rayDirY = Math.sin(this.heading);
+    double posTileX = this.posX/64;
+    double posTileY = this.posY/64;
     this.arrayPos = new int[]{(int)(this.posY/64),(int)(this.posX/64)};
-    this.deltaDistX = Math.abs(64/rayDirX);
-    this.deltaDistY = Math.abs(64/rayDirY);
+    this.deltaDistX = Math.abs(1/rayDirX);
+    this.deltaDistY = Math.abs(1/rayDirY);
     if (rayDirX < 0){
       this.stepX = -1;
-      this.sideDistX = (posX - this.arrayPos[1] * 64) * this.deltaDistX;
+      this.sideDistX = (posTileX - this.arrayPos[1]) * this.deltaDistX;
     } else {
       this.stepX = 1;
-      this.sideDistX = ((this.arrayPos[1] + 1) * 64 - this.posX) * this.deltaDistX;
+      this.sideDistX = ((this.arrayPos[1] + 1) - posTileX) * this.deltaDistX;
     }
 
     if (rayDirY < 0){
       this.stepY = -1;
-      this.sideDistY = (this.posY - this.arrayPos[0] * 64) * this.deltaDistY;
+      this.sideDistY = (posTileY - this.arrayPos[0]) * this.deltaDistY;
     } else {
       this.stepY = 1;
-      this.sideDistY = ((this.arrayPos[0] + 1) * 64 - this.posY) * this.deltaDistY;
+      this.sideDistY = ((this.arrayPos[0] + 1) - posTileY) * this.deltaDistY;
 
     }
 

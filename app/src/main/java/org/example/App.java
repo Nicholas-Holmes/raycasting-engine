@@ -81,7 +81,6 @@ public class App extends Application{
       @Override
       public void handle(long now){
         gc.clearRect(0,0,WIDTH,HEIGHT);
-        System.out.println(player.getPosX() + " " + player.getPosY() + " " + player.getHeading());
         player.positionCheck();
         for (int i = 0; i < 60; i++){
           double[] sliceData = vController.calculateColumn(i);
