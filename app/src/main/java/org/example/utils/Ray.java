@@ -24,7 +24,7 @@ public class Ray{
     this.startX = posX;
     this.startY = posY;
     this.heading = heading;
-    this.arrayPos = new int[]{(int)Math.floor(posY/64), (int)Math.floor(posX/64)};
+    initializeRay();
   }
 
   /**
@@ -32,7 +32,7 @@ public class Ray{
    * @return double array containing the Ray's x position, y position, distance, and ray angle.
    */
   public double[] getData(){
-    this.distance = (double)Math.hypot(this.posX - this.startX, this.posY - this.startY);
+    this.distance = this.side == WallSide.VERTICAL ? (sideDistX - deltaDistX):(sideDistY - deltaDistY);
     return new double[]{this.posX, this.posY, this.distance, this.heading};
   }
 
@@ -71,40 +71,15 @@ public class Ray{
   }
 
   public void step(){
-    double rayDirX = Math.cos(this.heading);
-    double rayDirY = Math.sin(this.heading);
-    int arrayDirX = rayDirX > 0 ? 1:-1;
-    int arrayDirY = rayDirY > 0 ? 1:-1;
-    double nextHorizontal = arrayDirY == 1 ? Math.floor(this.posY / 64) * 64 + 64
-                                           : Math.floor(this.posY / 64) * 64 - 0.01;
-    double nextVertical = arrayDirX == 1 ? Math.floor(this.posX / 64) * 64 + 64
-                                         : Math.floor(this.posX / 64) * 64 - 0.01;
-    double distToVertical = Double.POSITIVE_INFINITY;
-    double distToHorizontal = Double.POSITIVE_INFINITY;
-
-    if (rayDirX != 0){
-      distToVertical = (nextVertical - this.posX) /rayDirX; 
-      if (distToVertical < 0){
-        distToVertical = Double.POSITIVE_INFINITY;
-      }
-    }
-
-    if (rayDirY != 0){
-      distToHorizontal = (nextHorizontal - this.posY) / rayDirY;
-      if (distToHorizontal < 0) {
-        distToHorizontal = Double.POSITIVE_INFINITY;
-      }
-    }
-
-    this.side = distToHorizontal > distToVertical ? WallSide.VERTICAL:WallSide.HORIZONTAL;
-    double step = distToHorizontal > distToVertical ? distToVertical:distToHorizontal;
-    if (side == WallSide.HORIZONTAL){
-      this.arrayPos[0] += arrayDirY;
+    if (sideDistX < sideDistY){
+      sideDistX += deltaDistX;
+      this.arrayPos[1] += stepX;
+      this.side = WallSide.VERTICAL;
     } else {
-      this.arrayPos[1] += arrayDirX;
+      sideDistY += deltaDistY;
+      this.arrayPos[0] += stepY;
+      this.side = WallSide.HORIZONTAL;
     }
-    this.posX += rayDirX * step;
-    this.posY += rayDirY * step;
   }
 
 }
