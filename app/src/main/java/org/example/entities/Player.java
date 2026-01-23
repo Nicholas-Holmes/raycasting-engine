@@ -1,10 +1,13 @@
 package org.example.entities;
 
+import org.example.enums.Direction;
+
 public class Player{
   private static final double ANGLE_STEP = Math.toRadians(5);
   private double posX;
   private double posY;
   private double heading;
+  private double step = 5.0;
 
   public Player(int posX, int posY){
     this.posX = posX * 64;// + 32;
@@ -31,19 +34,30 @@ public class Player{
   }
       
 
-  public void move(double dx, double dy){
-    this.posX += dx;
-    this.posY += dy;
-  }
+  public void move(Direction direction){
+    double headingDirX = Math.cos(this.heading);
+    double headingDirY = Math.sin(this.heading);
+    switch(direction){
+      case Direction.FORWARD:
+        this.posX += headingDirX * this.step;
+        this.posY += headingDirY * this.step;
+      break;
 
-  public void rotate(String direction){
-    if (direction.equals("left")){
-      this.heading -= ANGLE_STEP;
-    } else {
-      this.heading += ANGLE_STEP;
+      case Direction.BACKWARD:
+        this.posX -= headingDirX * this.step;
+        this.posY -= headingDirY * this.step;
+      break;
+
+      case Direction.LEFT:
+        this.heading -= ANGLE_STEP;
+      break;
+
+      case Direction.RIGHT:
+        this.heading += ANGLE_STEP;
+      break;
     }
-
   }
+
 
 
 }

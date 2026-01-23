@@ -3,6 +3,7 @@ import org.example.models.ViewModel;
 import org.example.utils.Ray;
 import org.example.services.ViewService;
 import org.example.entities.Player;
+import org.example.enums.Direction;
 
 public class ViewController{
 
@@ -15,13 +16,10 @@ public class ViewController{
     this.player = vModel.getPlayer();
   }
 
-  public void move(double dx, double dy){
-    player.move(dx, dy);
+  public void move(Direction direction){
+    player.move(direction);
   }
 
-  public void rotate(String direction){
-    player.rotate(direction);
-  }
 
 
   public double[] calculateColumn(int i){

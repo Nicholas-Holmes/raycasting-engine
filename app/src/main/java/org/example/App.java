@@ -8,6 +8,7 @@ import org.example.models.ViewModel;
 import com.sun.prism.paint.Paint;
 
 import org.example.entities.Player;
+import org.example.enums.Direction;
 
 import java.util.Arrays;
 
@@ -42,21 +43,19 @@ public class App extends Application{
       KeyCode code = event.getCode();
       switch(code){
         case KeyCode.W:
-          vController.move(0, -10); 
-          System.out.println("Moved forward.");
+          vController.move(Direction.FORWARD); 
         break;
 
         case KeyCode.S:
-          vController.move(0, +10); 
-          System.out.println("Moved backwards.");
+          vController.move(Direction.BACKWARD); 
         break;
 
         case KeyCode.A:
-          vController.rotate("left");
+          vController.move(Direction.LEFT);
         break;
 
         case KeyCode.D:
-          vController.rotate("right");
+          vController.move(Direction.RIGHT);
         break;
 
         default:
