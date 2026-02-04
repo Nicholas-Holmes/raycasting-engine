@@ -4,5 +4,7 @@ public enum Direction{
   FORWARD,
   BACKWARD,
   LEFT,
-  RIGHT
+  RIGHT,
+  ROTATE_RIGHT,
+  ROTATE_LEFT
 }

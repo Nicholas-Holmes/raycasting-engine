@@ -49,12 +49,21 @@ public class Player{
       break;
 
       case Direction.LEFT:
-        this.heading -= ANGLE_STEP;
+        this.posX += headingDirY * this.step;
+        this.posY -= headingDirX * this.step;
       break;
 
       case Direction.RIGHT:
+        this.posX -= headingDirY * this.step;
+        this.posY += headingDirX * this.step;
+      break;
+
+      case Direction.ROTATE_RIGHT:
         this.heading += ANGLE_STEP;
       break;
+
+      case Direction.ROTATE_LEFT:
+        this.heading -= ANGLE_STEP;
     }
   }
 

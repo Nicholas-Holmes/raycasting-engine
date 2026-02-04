@@ -58,6 +58,13 @@ public class App extends Application{
           vController.move(Direction.RIGHT);
         break;
 
+        case KeyCode.Q:
+          vController.move(Direction.ROTATE_LEFT);
+        break;
+
+        case KeyCode.E:
+          vController.move(Direction.ROTATE_RIGHT);
+
         default:
           break;
       }
