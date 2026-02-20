@@ -22,22 +22,71 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.robot.Robot;
 import javafx.stage.Stage;
 
 public class App extends Application{
 
   static final int WIDTH = 640;
   static final int HEIGHT = 480;
-
+  private boolean isProgramaticMouseMovement = false;
+  private boolean mouseCaptured = false;
   @Override
   public void start(Stage stage){
     ViewModel vModel = new ViewModel(new Player(3,6));
+    vModel.setScreenCenter(WIDTH/2, HEIGHT/2);
     ViewController vController = new ViewController(vModel);
+  
     Canvas canvas = new Canvas(WIDTH, HEIGHT);
     GraphicsContext gc = canvas.getGraphicsContext2D();
 
     StackPane root = new StackPane(canvas);
     Scene scene = new Scene(root, WIDTH, HEIGHT);
+
+    scene.setOnMouseClicked(event -> {
+      if (!mouseCaptured){
+        isProgramaticMouseMovement = true;
+        double[] screenCenter = vModel.getScreenCenter();
+        double sceneX = scene.getWindow().getX();
+        double sceneY = scene.getWindow().getY();
+        System.out.println("X: " + screenCenter[0] + " Y: " + screenCenter[1]);
+        try{
+          new Robot().mouseMove((int)(sceneX + screenCenter[0]), (int)(sceneY + screenCenter[1]));
+          isProgramaticMouseMovement = true;
+          mouseCaptured = true;
+
+        } catch (Exception e){
+          e.printStackTrace();
+        }
+        System.out.println("Mouse: Captured");
+
+      }
+    });
+
+    scene.setOnMouseMoved(event -> {
+      if (isProgramaticMouseMovement){
+        isProgramaticMouseMovement = false;
+        return;
+      }
+      if (mouseCaptured){
+        double mouseX = event.getSceneX();
+        double[] screenCenter = vModel.getScreenCenter();
+        double sceneX = scene.getWindow().getX();
+        double sceneY = scene.getWindow().getY();
+        
+        try{
+          new Robot().mouseMove((int)(sceneX + screenCenter[0]), (int)(sceneY + screenCenter[1]));
+          isProgramaticMouseMovement = true;
+
+        } catch (Exception e){
+          e.printStackTrace();
+        }
+        double mouseDeltaX = mouseX > screenCenter[0] ? mouseX - screenCenter[0]:screenCenter[0] - mouseX;
+        System.out.println("Mouse Delta X: " + mouseDeltaX);
+
+      }
+    });
+
 
     scene.setOnKeyPressed(event -> {
       KeyCode code = event.getCode();
@@ -64,6 +113,11 @@ public class App extends Application{
 
         case KeyCode.E:
           vController.move(Direction.ROTATE_RIGHT);
+        break;
+
+        case KeyCode.X:
+          mouseCaptured = false;
+        break;
 
         default:
           break;
