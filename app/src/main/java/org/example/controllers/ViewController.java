@@ -20,6 +20,9 @@ public class ViewController{
     player.move(direction);
   }
 
+  public void rotate( double dx){
+    player.rotate(dx);
+  }
 
 
   public double[] calculateColumn(int i){

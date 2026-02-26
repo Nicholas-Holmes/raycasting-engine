@@ -5,6 +5,7 @@ package org.example;
 
 import org.example.models.ViewModel;
 
+import javafx.geometry.Point2D;
 import com.sun.prism.paint.Paint;
 
 import org.example.entities.Player;
@@ -34,7 +35,7 @@ public class App extends Application{
   @Override
   public void start(Stage stage){
     ViewModel vModel = new ViewModel(new Player(3,6));
-    vModel.setScreenCenter(WIDTH/2, HEIGHT/2);
+    
     ViewController vController = new ViewController(vModel);
   
     Canvas canvas = new Canvas(WIDTH, HEIGHT);
@@ -43,15 +44,16 @@ public class App extends Application{
     StackPane root = new StackPane(canvas);
     Scene scene = new Scene(root, WIDTH, HEIGHT);
 
+
     scene.setOnMouseClicked(event -> {
       if (!mouseCaptured){
         isProgramaticMouseMovement = true;
-        double[] screenCenter = vModel.getScreenCenter();
+        Point2D screenCenter = vModel.getScreenCenter();
         double sceneX = scene.getWindow().getX();
         double sceneY = scene.getWindow().getY();
-        System.out.println("X: " + screenCenter[0] + " Y: " + screenCenter[1]);
+        System.out.println("X: " + (sceneX + screenCenter.getX()) + " Y: " + (sceneY + screenCenter.getY()));
         try{
-          new Robot().mouseMove((int)(sceneX + screenCenter[0]), (int)(sceneY + screenCenter[1]));
+          new Robot().mouseMove((int)Math.round(screenCenter.getX()), (int)Math.round(screenCenter.getY()));
           isProgramaticMouseMovement = true;
           mouseCaptured = true;
 
@@ -69,21 +71,22 @@ public class App extends Application{
         return;
       }
       if (mouseCaptured){
-        double mouseX = event.getSceneX();
-        double[] screenCenter = vModel.getScreenCenter();
-        double sceneX = scene.getWindow().getX();
-        double sceneY = scene.getWindow().getY();
+        double mouseX = event.getScreenX();
+        Point2D screenCenter = vModel.getScreenCenter();
+        //double sceneX = scene.getWindow().getX();
+        //double sceneY = scene.getWindow().getY();
+        double mouseDeltaX = (mouseX - (screenCenter.getX()));
+        //Direction direction = mouseDeltaX  > 0 ? Direction.ROTATE_RIGHT:Direction.ROTATE_LEFT;
+        System.out.println(mouseDeltaX);
+        vController.rotate(mouseDeltaX);
         
         try{
-          new Robot().mouseMove((int)(sceneX + screenCenter[0]), (int)(sceneY + screenCenter[1]));
+          new Robot().mouseMove((int)Math.round(screenCenter.getX()), (int)Math.round(screenCenter.getY()));
           isProgramaticMouseMovement = true;
 
         } catch (Exception e){
           e.printStackTrace();
         }
-        double mouseDeltaX = mouseX > screenCenter[0] ? mouseX - screenCenter[0]:screenCenter[0] - mouseX;
-        System.out.println("Mouse Delta X: " + mouseDeltaX);
-
       }
     });
 
@@ -127,6 +130,8 @@ public class App extends Application{
     stage.setTitle("Raycaster");
     stage.setScene(scene);
     stage.show();
+    Point2D center = scene.getRoot().localToScreen(scene.getWidth()/2,scene.getHeight()/2);
+    vModel.setScreenCenter(center);
 
     // Initial clear
     gc.clearRect(0, 0, WIDTH, HEIGHT);

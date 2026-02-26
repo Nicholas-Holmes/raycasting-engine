@@ -3,7 +3,7 @@ package org.example.entities;
 import org.example.enums.Direction;
 
 public class Player{
-  private static final double ANGLE_STEP = Math.toRadians(5);
+  private static final double ANGLE_STEP = Math.toRadians(1);
   private double posX;
   private double posY;
   private double heading;
@@ -32,6 +32,10 @@ public class Player{
     if (this.posY % 64 == 0) this.posY += Math.sin(this.heading) * 0.01;
 
   }
+
+  public void rotate(double dx){
+    this.heading += ANGLE_STEP * dx;
+  }
       
 
   public void move(Direction direction){
@@ -57,13 +61,8 @@ public class Player{
         this.posX -= headingDirY * this.step;
         this.posY += headingDirX * this.step;
       break;
-
-      case Direction.ROTATE_RIGHT:
-        this.heading += ANGLE_STEP;
+      default:
       break;
-
-      case Direction.ROTATE_LEFT:
-        this.heading -= ANGLE_STEP;
     }
   }
 
