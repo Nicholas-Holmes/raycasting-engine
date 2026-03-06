@@ -44,11 +44,10 @@ public class App extends Application{
     StackPane root = new StackPane(canvas);
     Scene scene = new Scene(root, WIDTH, HEIGHT);
 
-
     scene.setOnMouseClicked(event -> {
       if (!mouseCaptured){
         isProgramaticMouseMovement = true;
-        Point2D screenCenter = vModel.getScreenCenter();
+        Point2D screenCenter = scene.getRoot().localToScreen(scene.getWidth()/2,scene.getHeight()/2);
         double sceneX = scene.getWindow().getX();
         double sceneY = scene.getWindow().getY();
         System.out.println("X: " + (sceneX + screenCenter.getX()) + " Y: " + (sceneY + screenCenter.getY()));
@@ -64,6 +63,8 @@ public class App extends Application{
 
       }
     });
+    //TODO: Get the scaling factor of the monitor the window is currently in and adjust positions accordingly, should fix the buggy behavior when moving the window 
+    //from monitor to monitor. 
 
     scene.setOnMouseMoved(event -> {
       if (isProgramaticMouseMovement){
@@ -72,16 +73,19 @@ public class App extends Application{
       }
       if (mouseCaptured){
         double mouseX = event.getScreenX();
-        Point2D screenCenter = vModel.getScreenCenter();
+        //Point2D mouseX = canvas.screenToLocal(event.getScreenX(), event.getScreenY());
+        Point2D sceneCenter = canvas.localToScreen(canvas.getWidth()/2, canvas.getHeight()/2);
         //double sceneX = scene.getWindow().getX();
         //double sceneY = scene.getWindow().getY();
-        double mouseDeltaX = (mouseX - (screenCenter.getX()));
+        double mouseDeltaX = (mouseX - ((int)sceneCenter.getX()));
         //Direction direction = mouseDeltaX  > 0 ? Direction.ROTATE_RIGHT:Direction.ROTATE_LEFT;
         System.out.println(mouseDeltaX);
         vController.rotate(mouseDeltaX);
         
+        
+        
         try{
-          new Robot().mouseMove((int)Math.round(screenCenter.getX()), (int)Math.round(screenCenter.getY()));
+          new Robot().mouseMove((int)sceneCenter.getX(), (int)sceneCenter.getY());
           isProgramaticMouseMovement = true;
 
         } catch (Exception e){
@@ -131,12 +135,10 @@ public class App extends Application{
     stage.setScene(scene);
     stage.show();
     Point2D center = scene.getRoot().localToScreen(scene.getWidth()/2,scene.getHeight()/2);
-    vModel.setScreenCenter(center);
 
     // Initial clear
     gc.clearRect(0, 0, WIDTH, HEIGHT);
     Player player = vModel.getPlayer();
-    System.out.println(player.getPosX() + " " + player.getPosY() + " " + player.getHeading());
 
     new AnimationTimer(){
       @Override
