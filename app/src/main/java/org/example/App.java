@@ -24,6 +24,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.robot.Robot;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class App extends Application{
@@ -63,29 +64,30 @@ public class App extends Application{
 
       }
     });
-    //TODO: Get the scaling factor of the monitor the window is currently in and adjust positions accordingly, should fix the buggy behavior when moving the window 
-    //from monitor to monitor. 
-
+    //TODO: Stop creating new robot each frame, instantiate a robot as a instance variable and reuse. 
     scene.setOnMouseMoved(event -> {
       if (isProgramaticMouseMovement){
         isProgramaticMouseMovement = false;
         return;
       }
       if (mouseCaptured){
+        //Grabbing the current monitors output scale 
+        Screen screen = Screen.getScreensForRectangle(stage.getX(), stage.getY(), 1, 1).get(0);
         double mouseX = event.getScreenX();
-        //Point2D mouseX = canvas.screenToLocal(event.getScreenX(), event.getScreenY());
         Point2D sceneCenter = canvas.localToScreen(canvas.getWidth()/2, canvas.getHeight()/2);
-        //double sceneX = scene.getWindow().getX();
-        //double sceneY = scene.getWindow().getY();
-        double mouseDeltaX = (mouseX - ((int)sceneCenter.getX()));
-        //Direction direction = mouseDeltaX  > 0 ? Direction.ROTATE_RIGHT:Direction.ROTATE_LEFT;
-        System.out.println(mouseDeltaX);
-        vController.rotate(mouseDeltaX);
+        double mouseDeltaX = (mouseX - sceneCenter.getX());
+
+        //Ignoring any deltas that are less than the output scale, this prevents the gittery rotations.
+        if (Math.abs(mouseDeltaX) <= screen.getOutputScaleX()){
+          return;
+        }
+        //Rounding the delta value, this gives consistent delta values across different monitors.
+        vController.rotate(Math.round(mouseDeltaX));
         
         
-        
+        //Moving the cursor back to the center of the game window. 
         try{
-          new Robot().mouseMove((int)sceneCenter.getX(), (int)sceneCenter.getY());
+          new Robot().mouseMove((int)Math.round(sceneCenter.getX()), (int)Math.round(sceneCenter.getY()));
           isProgramaticMouseMovement = true;
 
         } catch (Exception e){
