@@ -99,29 +99,22 @@ public class App extends Application{
 
     scene.setOnKeyPressed(event -> {
       KeyCode code = event.getCode();
+      //Appending movement enums to a buffer when a key is pressed.
       switch(code){
         case KeyCode.W:
-          vController.move(Direction.FORWARD); 
+          vController.appendMovement(Direction.FORWARD); 
         break;
 
         case KeyCode.S:
-          vController.move(Direction.BACKWARD); 
+          vController.appendMovement(Direction.BACKWARD); 
         break;
 
         case KeyCode.A:
-          vController.move(Direction.LEFT);
+          vController.appendMovement(Direction.LEFT);
         break;
 
         case KeyCode.D:
-          vController.move(Direction.RIGHT);
-        break;
-
-        case KeyCode.Q:
-          vController.move(Direction.ROTATE_LEFT);
-        break;
-
-        case KeyCode.E:
-          vController.move(Direction.ROTATE_RIGHT);
+          vController.appendMovement(Direction.RIGHT);
         break;
 
         case KeyCode.X:
@@ -132,6 +125,32 @@ public class App extends Application{
           break;
       }
     });
+
+    //Removing movement enums from buffer when a key is released.
+    scene.setOnKeyReleased(event -> {
+      KeyCode code = event.getCode();
+      switch(code){
+        case KeyCode.W:
+          vController.removeMovement(Direction.FORWARD);
+        break;
+
+        case KeyCode.S:
+          vController.removeMovement(Direction.BACKWARD);
+        break;
+
+        case KeyCode.D:
+          vController.removeMovement(Direction.RIGHT);
+        break;
+
+        case KeyCode.A:
+          vController.removeMovement(Direction.LEFT);
+        break;
+        
+        default:
+        break;
+      }
+    });
+
 
     stage.setTitle("Raycaster");
     stage.setScene(scene);
@@ -146,7 +165,6 @@ public class App extends Application{
       @Override
       public void handle(long now){
         gc.clearRect(0,0,WIDTH,HEIGHT);
-        player.positionCheck();
         for (int i = 0; i < 60; i++){
           double[] sliceData = vController.calculateColumn(i);
           if (sliceData[0] == 1){
@@ -157,6 +175,7 @@ public class App extends Application{
           gc.fillRect(sliceData[1],sliceData[2],sliceData[3],sliceData[4]);//drawing the slice
           
         }
+        vController.move();
 
       }
     }.start();

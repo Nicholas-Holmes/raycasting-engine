@@ -7,7 +7,7 @@ public class Player{
   private double posX;
   private double posY;
   private double heading;
-  private double step = 5.0;
+  private double step = 2.0;
 
   public Player(int posX, int posY){
     this.posX = posX * 64;// + 32;
@@ -27,43 +27,14 @@ public class Player{
     return this.heading;
   }
 
-  public void positionCheck(){
-    if (this.posX % 64 == 0) this.posX += Math.cos(this.heading) * 0.01;
-    if (this.posY % 64 == 0) this.posY += Math.sin(this.heading) * 0.01;
-
-  }
-
   public void rotate(double dx){
     this.heading += ANGLE_STEP * dx;
   }
       
 
-  public void move(Direction direction){
-    double headingDirX = Math.cos(this.heading);
-    double headingDirY = Math.sin(this.heading);
-    switch(direction){
-      case Direction.FORWARD:
-        this.posX += headingDirX * this.step;
-        this.posY += headingDirY * this.step;
-      break;
-
-      case Direction.BACKWARD:
-        this.posX -= headingDirX * this.step;
-        this.posY -= headingDirY * this.step;
-      break;
-
-      case Direction.LEFT:
-        this.posX += headingDirY * this.step;
-        this.posY -= headingDirX * this.step;
-      break;
-
-      case Direction.RIGHT:
-        this.posX -= headingDirY * this.step;
-        this.posY += headingDirX * this.step;
-      break;
-      default:
-      break;
-    }
+  public void move(double dx, double dy){
+    this.posX += dx * this.step;
+    this.posY += dy * this.step;
   }
 
 

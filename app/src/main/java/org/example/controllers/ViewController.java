@@ -2,6 +2,10 @@ package org.example.controllers;
 import org.example.models.ViewModel;
 import org.example.utils.Ray;
 import org.example.services.ViewService;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.example.entities.Player;
 import org.example.enums.Direction;
 
@@ -10,14 +14,59 @@ public class ViewController{
   private ViewModel vModel;
   private Player player;
   private double angleStep = (Math.PI/3)/60;
+  private List<Direction> movementBuffer = new ArrayList<>(); 
 
   public ViewController(ViewModel vModel){
     this.vModel = vModel;
     this.player = vModel.getPlayer();
   }
 
-  public void move(Direction direction){
-    player.move(direction);
+  public void appendMovement(Direction direction){
+    if (movementBuffer.contains(direction)){
+      return;
+    }
+    movementBuffer.add(direction);
+  }
+
+  public void removeMovement(Direction direction){
+    movementBuffer.remove(direction);
+  }
+
+  public void move(){
+    //Grabbing the player heading and getting the x and y component.
+    double heading = this.player.getHeading();
+    double dirX = Math.cos(heading);
+    double dirY = Math.sin(heading);
+    double dx = 0; 
+    double dy = 0; 
+    //Accumulating movement into dx and dy to handle multiple directional input at once. 
+    if (movementBuffer.contains(Direction.FORWARD)){
+      dx += dirX;
+      dy += dirY;
+    }
+    if (movementBuffer.contains(Direction.BACKWARD)){
+      dx -= dirX;
+      dy -= dirY;
+    }
+    if (movementBuffer.contains(Direction.LEFT)){
+      //Accumulating the left perpendicular vector.
+      dx += dirY;
+      dy -= dirX;
+    }
+    if (movementBuffer.contains(Direction.RIGHT)){
+      //Accumulating the right perpendicular vector. 
+      dx -= dirY;
+      dy += dirX;
+    }
+    //Calculating the magnitude of the movement vector and checking that it is greater than zero so we don't divide by zero for normalization. 
+    double magnitude = Math.sqrt(dx * dx + dy * dy);
+    if (magnitude <= 0){
+      return;
+    }
+    //Normalizing the vector. 
+    dx /= magnitude;
+    dy /= magnitude; 
+    player.move(dx,dy);
   }
 
   public void rotate( double dx){
