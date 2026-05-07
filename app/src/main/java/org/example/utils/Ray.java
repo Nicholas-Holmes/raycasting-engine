@@ -16,6 +16,10 @@ public class Ray{
   private int stepY;
   private double sideDistX;
   private double sideDistY;
+  private double posTileX;
+  private double posTileY;
+  private double rayDirX;
+  private double rayDirY;
   
 
   public Ray(double posX, double posY,double heading){
@@ -29,10 +33,18 @@ public class Ray{
 
   /**
    * Gets the data associated with a ray neccessary for rendering.
-   * @return double array containing the Ray's x position, y position, distance, and ray angle.
+   * @return double array containing the Ray's x position, y position, distance, ray angle, and world distance to the collision.
    */
   public double[] getData(){
     this.distance = this.side == WallSide.VERTICAL ? (sideDistX - deltaDistX):(sideDistY - deltaDistY);
+    //Exact point in world cordinates a ray hits a surface.
+    double collisionX = this.posX + this.rayDirX * this.distance;
+    double collisionY = this.posY + this.rayDirY * this.distance;
+    double wallHit = this.side == WallSide.VERTICAL ? collisionY/64:collisionX/64;
+    wallHit = wallHit - Math.floor(wallHit);
+    int texX = (int)(wallHit * 32);
+    System.out.println(texX);
+    
     return new double[]{this.posX, this.posY, this.distance, this.heading};
   }
 
@@ -45,10 +57,10 @@ public class Ray{
   }
 
   private void initializeRay(){
-    double rayDirX = Math.cos(this.heading);
-    double rayDirY = Math.sin(this.heading);
-    double posTileX = this.posX/64;
-    double posTileY = this.posY/64;
+    this.rayDirX = Math.cos(this.heading);
+    this.rayDirY = Math.sin(this.heading);
+    this.posTileX = this.posX/64;
+    this.posTileY = this.posY/64;
     this.arrayPos = new int[]{(int)(this.posY/64),(int)(this.posX/64)};
     this.deltaDistX = Math.abs(1/rayDirX);
     this.deltaDistY = Math.abs(1/rayDirY);
