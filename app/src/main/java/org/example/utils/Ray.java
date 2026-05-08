@@ -38,12 +38,13 @@ public class Ray{
   public double[] getData(){
     this.distance = this.side == WallSide.VERTICAL ? (sideDistX - deltaDistX):(sideDistY - deltaDistY);
     //Exact point in world cordinates a ray hits a surface.
-    double collisionX = this.posX + this.rayDirX * this.distance;
-    double collisionY = this.posY + this.rayDirY * this.distance;
+    double collisionX = this.posX + this.rayDirX * this.distance*64;
+    double collisionY = this.posY + this.rayDirY * this.distance*64;
+    System.out.println("X: " + collisionX + " , Y: " + collisionY + " , Array: " + this.arrayPos[0] + ", " + this.arrayPos[1]);
     double wallHit = this.side == WallSide.VERTICAL ? collisionY/64:collisionX/64;
     wallHit = wallHit - Math.floor(wallHit);
     int texX = (int)(wallHit * 32);
-    System.out.println(texX);
+    //System.out.println(texX);
     
     return new double[]{this.posX, this.posY, this.distance, this.heading};
   }
