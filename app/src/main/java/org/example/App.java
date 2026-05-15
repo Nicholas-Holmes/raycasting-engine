@@ -167,6 +167,8 @@ public class App extends Application{
         gc.clearRect(0,0,WIDTH,HEIGHT);
         for (int i = 0; i < 60; i++){
           double[] sliceData = vController.calculateColumn(i);
+          double step = 1.0 * 32/sliceData[4]; //1.0 * textureHeight/wallheight.
+          double texPos = (sliceData[2] - HEIGHT/2 + sliceData[4]/2) * step; //drawStart - screenHeight/2 + lineHeight/2 * step
           if (sliceData[0] == 1){
             gc.setFill(Color.DARKSLATEGRAY);
           } else {

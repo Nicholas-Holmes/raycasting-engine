@@ -84,7 +84,7 @@ public class ViewController{
     double columnWidth = (double)640 / 60;//Calculating the width of each screen slice
     double x = i * columnWidth;//Calculating the starting x coordinate of the slice corresponding to this ray
     //Calculating the world collision cordinates of the ray.
-    return new double[]{collision[0],x,wallTop,columnWidth,wallHeight};
+    return new double[]{collision[0],x,wallTop,columnWidth,wallHeight, collision[5]};
 
   }
 

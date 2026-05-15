@@ -33,7 +33,7 @@ public class Ray{
 
   /**
    * Gets the data associated with a ray neccessary for rendering.
-   * @return double array containing the Ray's x position, y position, distance, ray angle, and world distance to the collision.
+   * @return double array containing the Ray's x position, y position, distance, ray angle, and texture X index.
    */
   public double[] getData(){
     this.distance = this.side == WallSide.VERTICAL ? (sideDistX - deltaDistX):(sideDistY - deltaDistY);
@@ -46,7 +46,7 @@ public class Ray{
     int texX = (int)(wallHit * 32);
     //System.out.println(texX);
     
-    return new double[]{this.posX, this.posY, this.distance, this.heading};
+    return new double[]{this.posX, this.posY, this.distance, this.heading, texX};
   }
 
   public int[] getArrayPos(){

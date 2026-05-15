@@ -18,7 +18,7 @@ public class ViewService{
     }
     double[] pos = ray.getData();
     int side = collisionSide == WallSide.HORIZONTAL ? 0:1;
-    return new double[]{side,pos[0],pos[1],pos[2],pos[3]};
+    return new double[]{side,pos[0],pos[1],pos[2],pos[3], pos[4]};
   }
 
 }
