@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.example.entities.Player;
 import org.example.enums.Direction;
+import org.example.enums.Color;
 
 public class ViewController{
 
@@ -15,6 +16,7 @@ public class ViewController{
   private Player player;
   private double angleStep = (Math.PI/3)/60;
   private List<Direction> movementBuffer = new ArrayList<>(); 
+  private int texColor;
 
   public ViewController(ViewModel vModel){
     this.vModel = vModel;
@@ -73,6 +75,17 @@ public class ViewController{
     player.rotate(dx);
   }
 
+  public int parseTexture(String s){
+    switch(s){
+      case "0":
+        texColor = Color.C0.getValue();
+       break;
+      case "1":
+        texColor = Color.C1.getValue();
+      break;
+    }
+    return texColor;
+  }
 
   public double[] calculateColumn(int i){
     double projPlaneDist = (640 / 2.0) / Math.tan((Math.PI/3)/2.0);

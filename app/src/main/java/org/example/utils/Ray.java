@@ -40,7 +40,6 @@ public class Ray{
     //Exact point in world cordinates a ray hits a surface.
     double collisionX = this.posX + this.rayDirX * this.distance*64;
     double collisionY = this.posY + this.rayDirY * this.distance*64;
-    System.out.println("X: " + collisionX + " , Y: " + collisionY + " , Array: " + this.arrayPos[0] + ", " + this.arrayPos[1]);
     double wallHit = this.side == WallSide.VERTICAL ? collisionY/64:collisionX/64;
     wallHit = wallHit - Math.floor(wallHit);
     int texX = (int)(wallHit * 32);

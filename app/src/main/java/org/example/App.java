@@ -39,10 +39,11 @@ public class App extends Application{
   private int[] pixelArray = new int[WIDTH * HEIGHT];
   private WritableImage screenBuffer = new WritableImage(WIDTH, HEIGHT);
   private PixelWriter pixelWriter = screenBuffer.getPixelWriter();
+  private String[][] texture;
   @Override
   public void start(Stage stage){
     ViewModel vModel = new ViewModel(new Player(3,6));
-    
+    texture = vModel.getTexture(1);   
     ViewController vController = new ViewController(vModel);
   
     Canvas canvas = new Canvas(WIDTH, HEIGHT);
@@ -173,28 +174,35 @@ public class App extends Application{
         for (int i = 0; i < 60; i++){
           int color = 0;
           double[] sliceData = vController.calculateColumn(i);
-          double step = 1.0 * 32/sliceData[4]; //1.0 * textureHeight/wallheight.
-          double texPos = (sliceData[2] - HEIGHT/2 + sliceData[4]/2) * step; //drawStart - screenHeight/2 + lineHeight/2 * step
-          if (sliceData[0] == 1){
-            gc.setFill(Color.DARKSLATEGRAY);
-            color = 0xFF5A5A5A;
-          } else {
-            gc.setFill(Color.LIGHTSLATEGREY);
-            color = 0xFFD3D3D3;
-          }
-          //gc.fillRect(sliceData[1],sliceData[2],sliceData[3],sliceData[4]);//drawing the slice
+          double step = 32/sliceData[4]; //1.0 * textureHeight/wallheight.
+          //Calculating the raw uncapped top bound of the wall. 
+          int rawTop = (int)((HEIGHT - sliceData[4])/2.0);
+          //The x or column of the texture we need to use.
+          int texX = (int)sliceData[5];
           double wallHeight = sliceData[4];
+          //Clamping the top and lower bound of the wall slice to the screen boundaries.
           int drawStart = (int)((-wallHeight/2) + (HEIGHT/2));
           int drawEnd = (int)((wallHeight/2) + (HEIGHT/2));
           if (drawStart < 0){drawStart = 0;};
           if (drawEnd >= HEIGHT){drawEnd = HEIGHT - 1;}
-
+          //Skipping drawing sections of the texture that are off screen by stepping that ammount through the texture column.
+          double texPos = (drawStart - rawTop) * step;
+          //Calculating the index of the pixel buffer where we need to start drawing the textured walls.
           int pixelIndex = (drawStart * WIDTH) + (int)sliceData[1];
+          //Loop to grab the texture color values and write them to the pixel buffer.
           for (int j = drawStart; j <= drawEnd; j++){
+            //Caclulating the Y index of the texture array we need to use, and ensuring it stays within the valid bounds of the array.
+            int texY = (int)texPos;
+            if (texY > 31) {texY = 31;};
+            if (texY < 0) {texY = 0;};
+            //Need to rework this and have the string texture data parsed on start of the game since this is a bit janky.
+            String texString = texture[texY][texX];
+            color = vController.parseTexture(texString);
             for (int k = 0; k < sliceData[3]; k++){
               pixelArray[pixelIndex + k] = color;
             }
             pixelIndex += WIDTH;
+            texPos += step;
           }
         }
         pixelWriter.setPixels(0,0, WIDTH, HEIGHT, PixelFormat.getIntArgbInstance(), pixelArray, 0, WIDTH);
