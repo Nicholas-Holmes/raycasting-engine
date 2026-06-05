@@ -75,17 +75,6 @@ public class ViewController{
     player.rotate(dx);
   }
 
-  public int parseTexture(String s){
-    switch(s){
-      case "0":
-        texColor = Color.C0.getValue();
-       break;
-      case "1":
-        texColor = Color.C1.getValue();
-      break;
-    }
-    return texColor;
-  }
 
   public double[] calculateColumn(int i){
     double projPlaneDist = (640 / 2.0) / Math.tan((Math.PI/3)/2.0);

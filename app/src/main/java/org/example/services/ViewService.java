@@ -21,4 +21,16 @@ public class ViewService{
     return new double[]{side,pos[0],pos[1],pos[2],pos[3], pos[4]};
   }
 
+  public static int applyShading(int color){
+    //Preserve alpha value;
+    int a = color & 0xFF000000;
+    //Extract and shift down by 1 to divide by 2 and.
+    int r = ((color & 0x00FF0000 >> 1) & 0x00FF0000);
+    int g = ((color & 0x0000FF00 >> 1) & 0x0000FF00);
+    int b = (color & 0x000000FF >> 1) & 0x000000FF;
+    //Pack them back into a single integer. 
+    return a | r | g | b;
+
+  }
+
 }
