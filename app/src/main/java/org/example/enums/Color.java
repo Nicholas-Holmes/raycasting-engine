@@ -4,14 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Color{
-  MISSING("-1", 0xFFFF00FF),
-  BLACK("0", 0xFF000000),
-  WHITE("1", 0xFFFFFFFF),
-  RED("2", 0xFFCC0000);
+  MISSING(-1, 0xFFFF00FF),
+  BLACK(0, 0xFF000000),
+  WHITE(1, 0xFFFFFFFF),
+  RED(2, 0xFFCC0000);
 
   private final int VALUE;
-  private final String KEY;
-  private static final Map<String, Color> ID_MAP = new HashMap<>();
+  private final int KEY;
+  private static final Map<Integer, Color> ID_MAP = new HashMap<>();
 
   static {
     for (Color color: values()){
@@ -19,12 +19,12 @@ public enum Color{
     }
   }
 
-  private Color(String key, int value){
+  private Color(int key, int value){
     this.KEY = key;
     this.VALUE = value;
   }
 
-  public static Color byId(String id){
+  public static Color byId(int id){
     return ID_MAP.getOrDefault(id, MISSING);
   }
 
@@ -32,7 +32,7 @@ public enum Color{
     return this.VALUE;
   }
 
-  public String getId(){
+  public int getId(){
     return this.KEY;
   }
 

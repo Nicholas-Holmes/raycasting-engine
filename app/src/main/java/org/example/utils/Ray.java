@@ -35,17 +35,29 @@ public class Ray{
    * Gets the data associated with a ray neccessary for rendering.
    * @return double array containing the Ray's x position, y position, distance, ray angle, and texture X index.
    */
-  public double[] getData(){
+  public double[] getData(double playerHeading){
     this.distance = this.side == WallSide.VERTICAL ? (sideDistX - deltaDistX):(sideDistY - deltaDistY);
     //Exact point in world cordinates a ray hits a surface.
-    double collisionX = this.posX + this.rayDirX * this.distance*64;
-    double collisionY = this.posY + this.rayDirY * this.distance*64;
-    double wallHit = this.side == WallSide.VERTICAL ? collisionY/64:collisionX/64;
+    double collisionX = this.posTileX + this.rayDirX * this.distance;
+    double collisionY = this.posTileY + this.rayDirY * this.distance;
+    double wallHit = this.side == WallSide.VERTICAL ? collisionY:collisionX;
     wallHit = wallHit - Math.floor(wallHit);
-    int texX = (int)(wallHit * 32);
-    //System.out.println(texX);
     
-    return new double[]{this.posX, this.posY, this.distance, this.heading, texX};
+    //int texX = (int)(wallHit * 32.0);
+    //if (texX < 0) texX = 0;
+    //if (texX >= 32) texX = 31;
+    //System.out.println(texX);
+    if (this.side == WallSide.VERTICAL && this.rayDirX < 0){
+      wallHit = 1.0 - wallHit;
+    }
+    if (this.side == WallSide.HORIZONTAL && this.rayDirY > 0){
+      wallHit = 1.0 - wallHit;
+    }
+
+    if (wallHit < 0.0) wallHit = 0.0;
+    if (wallHit >= 1.0) wallHit = 0.9999;
+    
+    return new double[]{this.posX, this.posY, this.distance, this.heading, wallHit};
   }
 
   public int[] getArrayPos(){
@@ -59,9 +71,9 @@ public class Ray{
   private void initializeRay(){
     this.rayDirX = Math.cos(this.heading);
     this.rayDirY = Math.sin(this.heading);
-    this.posTileX = this.posX/64;
-    this.posTileY = this.posY/64;
-    this.arrayPos = new int[]{(int)(this.posY/64),(int)(this.posX/64)};
+    this.posTileX = this.posX/64.0;
+    this.posTileY = this.posY/64.0;
+    this.arrayPos = new int[]{(int)Math.floor(this.posTileY),(int)Math.floor(this.posTileX)};
     this.deltaDistX = Math.abs(1/rayDirX);
     this.deltaDistY = Math.abs(1/rayDirY);
     if (rayDirX < 0){
