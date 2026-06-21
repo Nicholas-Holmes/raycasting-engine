@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Color{
-  MISSING(-1, 0xFFFF00FF),
+  PURPLE(3, 0xFFFF00FF),
   BLACK(0, 0xFF000000),
   WHITE(1, 0xFFFFFFFF),
   RED(2, 0xFFCC0000);
@@ -25,7 +25,7 @@ public enum Color{
   }
 
   public static Color byId(int id){
-    return ID_MAP.getOrDefault(id, MISSING);
+    return ID_MAP.getOrDefault(id, PURPLE);
   }
 
   public int getValue() {
