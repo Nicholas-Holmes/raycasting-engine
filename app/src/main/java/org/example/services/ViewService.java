@@ -1,5 +1,6 @@
 package org.example.services;
 import org.example.utils.Ray;
+import org.example.DTO.RayCollision;
 import org.example.enums.WallSide;
 
 public class ViewService{
@@ -13,12 +14,13 @@ public class ViewService{
       int cell = map[indexPos[0]][indexPos[1]];
       if (cell == 1){
         collided = !collided;
-        collisionSide = ray.getCollisionSide();
+        //collisionSide = ray.getCollisionSide();
       }
     }
-    double[] pos = ray.getData(playerHeading);
-    int side = collisionSide == WallSide.HORIZONTAL ? 0:1;
-    return new double[]{side,pos[0],pos[1],pos[2],pos[3], pos[4]};
+    RayCollision pos = ray.getData();
+    int side = pos.getSide() == WallSide.HORIZONTAL ? 0:1;
+    //0:side,1:posX, 2:posY, 3:dist, 4:heading, 5:wallHit
+    return new double[]{side,pos.getPosX(),pos.getPosY(),pos.getDist(),pos.getHeading(), pos.getWallHit()};
   }
 
   public static int applyShading(int color){

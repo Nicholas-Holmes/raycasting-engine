@@ -1,4 +1,5 @@
 package org.example.utils;
+import org.example.DTO.RayCollision;
 import org.example.enums.WallSide;
 
 public class Ray{
@@ -35,7 +36,7 @@ public class Ray{
    * Gets the data associated with a ray neccessary for rendering.
    * @return double array containing the Ray's x position, y position, distance, ray angle, and texture X index.
    */
-  public double[] getData(double playerHeading){
+  public RayCollision getData(){
     this.distance = this.side == WallSide.VERTICAL ? (sideDistX - deltaDistX):(sideDistY - deltaDistY);
     //Exact point in world cordinates a ray hits a surface.
     double collisionX = this.posTileX + this.rayDirX * this.distance;
@@ -57,7 +58,7 @@ public class Ray{
     if (wallHit < 0.0) wallHit = 0.0;
     if (wallHit >= 1.0) wallHit = 0.9999;
     
-    return new double[]{this.posX, this.posY, this.distance, this.heading, wallHit};
+    return new RayCollision(this.posX, this.posY, this.distance, this.heading, wallHit, this.side);
   }
 
   public int[] getArrayPos(){
