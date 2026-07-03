@@ -1,11 +1,15 @@
 package org.example.controllers;
 import org.example.models.ViewModel;
 import org.example.utils.Ray;
+
+import javafx.stage.Screen;
+
 import org.example.services.ViewService;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.DTO.ScreenColumnData;
 import org.example.entities.Player;
 import org.example.enums.Direction;
 import org.example.enums.Color;
@@ -77,20 +81,13 @@ public class ViewController{
 
 
   public double[] calculateColumn(int i){
-    double projPlaneDist = (640 / 2.0) / Math.tan((Math.PI/3)/2.0);
-    double relativeAngle = -((Math.PI/3)/2) + i * angleStep;
     double rayAngle = player.getHeading() - ((Math.PI/3) / 2) + i * angleStep; 
-    double[] collision = ViewService.castRay(new Ray(player.getPosX(), player.getPosY(), rayAngle), vModel.getMap(), player.getHeading());
-    double correctedDistance = collision[3] * Math.cos(relativeAngle);
-    //double correctedDistance = collision[3] * Math.cos(collision[4] - vModel.getPlayer().getHeading());//Fixing fisheye effect by adjusting distance
-    //double wallHeight = (projPlaneDist) / (collision[3] * Math.cos(collision[4] - player.getHeading()));//Wall height = tileSize * screenHeight divided by the corrected distance
-    double wallHeight = projPlaneDist / correctedDistance;
-    double wallTop = (480 - wallHeight) / 2;//Wall top = screenHeight - wallHeight divided by 2. (centers the wall in the view)
+    ScreenColumnData collision = ViewService.castRay(new Ray(player.getPosX(), player.getPosY(), rayAngle), vModel.getMap(), player.getHeading(), i, angleStep);
     double columnWidth = (double)640 / 60;//Calculating the width of each screen slice
     double x = i * columnWidth;//Calculating the starting x coordinate of the slice corresponding to this ray
     //Calculating the world collision cordinates of the ray.
-    return new double[]{collision[0],x,wallTop,columnWidth,wallHeight, collision[5]};
-
+    //collision[0]:side, collision[5]:wallHit;
+    return new double[]{collision.getSide(),x,collision.getWallTop(),columnWidth,collision.getWallHeight(), collision.getWallHit()};
   }
 
 

@@ -1,13 +1,13 @@
 package org.example.services;
 import org.example.utils.Ray;
 import org.example.DTO.RayCollision;
+import org.example.DTO.ScreenColumnData;
 import org.example.enums.WallSide;
 
 public class ViewService{
   
-  public static double[] castRay(Ray ray, int[][] map, double playerHeading){
+  public static ScreenColumnData castRay(Ray ray, int[][] map, double playerHeading, int i, double angleStep){
     boolean collided = false;
-    WallSide collisionSide = null;
     while(!collided){
       ray.step();
       int[] indexPos = ray.getArrayPos();
@@ -19,8 +19,18 @@ public class ViewService{
     }
     RayCollision pos = ray.getData();
     int side = pos.getSide() == WallSide.HORIZONTAL ? 0:1;
+
+    double projPlaneDist = (640/2.0)/Math.tan((Math.PI/3)/2.0);
+    double relativeAngle = -((Math.PI/3)/2) + i * angleStep;
+    double correctedDistance = pos.getDist() * Math.cos(relativeAngle);
+    double wallHeight = projPlaneDist / correctedDistance;
+    double wallTop = (480 - wallHeight) / 2;
+
+    ScreenColumnData columnData = new ScreenColumnData(side, wallTop, wallHeight, pos.getWallHit());
+
+    return columnData;
     //0:side,1:posX, 2:posY, 3:dist, 4:heading, 5:wallHit
-    return new double[]{side,pos.getPosX(),pos.getPosY(),pos.getDist(),pos.getHeading(), pos.getWallHit()};
+    //return new double[]{side,pos.getPosX(),pos.getPosY(),pos.getDist(),pos.getHeading(), pos.getWallHit()};
   }
 
   public static int applyShading(int color){
