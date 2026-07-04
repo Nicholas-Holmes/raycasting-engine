@@ -47,7 +47,7 @@ public class App extends Application{
   public void start(Stage stage){
 
     //Temporary for testing at the moment until I add level files and files to track player progress thorugh the game. 
-    Loader.loadTextures("testTexture.json");
+    Loader.loadTextures("TestTexture.json");
     ViewModel vModel = new ViewModel(new Player(3,6));
     ViewController vController = new ViewController(vModel);
   
