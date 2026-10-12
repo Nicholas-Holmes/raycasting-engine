@@ -80,14 +80,15 @@ public class ViewController{
   }
 
 
-  public double[] calculateColumn(int i){
+  public ScreenColumnData calculateColumn(int i){
     double rayAngle = player.getHeading() - ((Math.PI/3) / 2) + i * angleStep; 
     ScreenColumnData collision = ViewService.castRay(new Ray(player.getPosX(), player.getPosY(), rayAngle), vModel.getMap(), player.getHeading(), i, angleStep);
     double columnWidth = (double)640 / 60;//Calculating the width of each screen slice
     double x = i * columnWidth;//Calculating the starting x coordinate of the slice corresponding to this ray
     //Calculating the world collision cordinates of the ray.
     //collision[0]:side, collision[5]:wallHit;
-    return new double[]{collision.getSide(),x,collision.getWallTop(),columnWidth,collision.getWallHeight(), collision.getWallHit()};
+    //return new double[]{collision.getSide(),x,collision.getWallTop(),columnWidth,collision.getWallHeight(), collision.getWallHit()};
+    return collision;
   }
 
 

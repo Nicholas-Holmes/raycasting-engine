@@ -26,6 +26,8 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
+
+import org.example.DTO.ScreenColumnData;
 import org.example.assets.Texture;
 import javafx.scene.paint.Color;
 import javafx.scene.robot.Robot;
@@ -36,8 +38,8 @@ import org.example.assets.TextureRegistry;
 
 public class App extends Application{
 
-  static final int WIDTH = 640;
-  static final int HEIGHT = 480;
+  public static final int WIDTH = 640;
+  public static final int HEIGHT = 480;
   private boolean isProgramaticMouseMovement = false;
   private boolean mouseCaptured = false;
   private int[] pixelArray = new int[WIDTH * HEIGHT];
@@ -180,16 +182,19 @@ public class App extends Application{
         Arrays.fill(pixelArray, 0xFFEAEAEA);
         for (int i = 0; i < WIDTH; i++){
           int color = 0;
-          double[] sliceData = vController.calculateColumn(i);
+          ScreenColumnData columnData = vController.calculateColumn(i);
+          double wallHeight = columnData.getWallHeight(); 
+          int drawStart = columnData.getDrawStart();
+          int drawEnd = columnData.getDrawEnd();
+          double wallHit = columnData.getWallHit();
+          int collisionSide = columnData.getSide();
 
-          double step = 32.0/sliceData[4]; //1.0 * textureHeight/wallheight.
+
+          double step = columnData.getStep(); //1.0 * textureHeight/wallheight.
           //Calculating the raw uncapped top bound of the wall. 
-          int rawTop = (int)((HEIGHT - sliceData[4])/2.0);
+          int rawTop = columnData.getRawTop();
           //The x or column of the texture we need to use.
-          double wallHeight = sliceData[4];
           //Clamping the top and lower bound of the wall slice to the screen boundaries.
-          int drawStart = (int)((-wallHeight/2) + (HEIGHT/2));
-          int drawEnd = (int)((wallHeight/2) + (HEIGHT/2));
           if (drawStart < 0){drawStart = 0;};
           if (drawEnd >= HEIGHT){drawEnd = HEIGHT - 1;}
 
@@ -197,7 +202,7 @@ public class App extends Application{
           if (screenX < 0 || screenX >= WIDTH) continue;
 
           //Extract the absolute textrue x index 
-          int texX = (int)Math.floor(sliceData[5] * 32.0);
+          int texX = (int)Math.floor(wallHit * 32.0);
 
           //clean wrapping loop for texture coordinate. 
           texX = texX %32;
@@ -220,7 +225,7 @@ public class App extends Application{
             color = TextureRegistry.getPixel(1, texY, texX).getValue();
 
             //apply shading
-            if (sliceData[0] == 1){
+            if (collisionSide == 1){
               color = ViewService.applyShading(color);
             }
             pixelArray[(j * WIDTH) + screenX] = color;

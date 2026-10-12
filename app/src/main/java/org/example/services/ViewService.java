@@ -1,5 +1,6 @@
 package org.example.services;
 import org.example.utils.Ray;
+import org.example.App;
 import org.example.DTO.RayCollision;
 import org.example.DTO.ScreenColumnData;
 import org.example.enums.WallSide;
@@ -25,8 +26,15 @@ public class ViewService{
     double correctedDistance = pos.getDist() * Math.cos(relativeAngle);
     double wallHeight = projPlaneDist / correctedDistance;
     double wallTop = (480 - wallHeight) / 2;
+    double step = 32.0/wallHeight;
+    int rawTop = (int)((App.HEIGHT - wallHeight)/2.0);
+    int drawStart = (int)((-wallHeight/2) + (App.HEIGHT/2));
+    int drawEnd = (int)((wallHeight/2) + (App.HEIGHT/2));
 
-    ScreenColumnData columnData = new ScreenColumnData(side, wallTop, wallHeight, pos.getWallHit());
+
+
+
+    ScreenColumnData columnData = new ScreenColumnData(side, wallTop, wallHeight, pos.getWallHit(), step, rawTop, drawStart, drawEnd);
 
     return columnData;
     //0:side,1:posX, 2:posY, 3:dist, 4:heading, 5:wallHit
