@@ -215,21 +215,32 @@ public class App extends Application{
           //calculate the starting texture vertical position.
           double texPos = (drawStart - rawTop) * step;
 
+
           //Loop to grab the texture color values and write them to the pixel buffer.
-          for (int j = drawStart; j <= drawEnd; j++){
-            //Caclulating the Y index of the texture array we need to use, and ensuring it stays within the valid bounds of the array.
-            int texY = (int)texPos;
-            if (texY > 31) {texY = 31;};
-            if (texY < 0) {texY = 0;};
+          for (int j = 0; j < HEIGHT; j++){
+            if (j < drawStart){
+              color = org.example.enums.Color.TEAL.getValue();
+              pixelArray[(j * WIDTH) + screenX] = color;
+              //Caclulating the Y index of the texture array we need to use, and ensuring it stays within the valid bounds of the array.
+            }else if (j >= drawStart && j <= drawEnd){
+              //Drawing walls 
+              int texY = (int)texPos;
+              if (texY > 31) {texY = 31;};
+              if (texY < 0) {texY = 0;};
 
-            color = TextureRegistry.getPixel(1, texY, texX).getValue();
+              color = TextureRegistry.getPixel(1, texY, texX).getValue();
 
-            //apply shading
-            if (collisionSide == 1){
-              color = ViewService.applyShading(color);
+              //apply shading
+              if (collisionSide == 1){
+                color = ViewService.applyShading(color);
+              }
+              pixelArray[(j * WIDTH) + screenX] = color;
+              texPos += step;
+              //Temporarily just making all pixels below the wall grey to simulate a floor will later add floor textures.
+            } else {
+              color = org.example.enums.Color.GREY.getValue();
+              pixelArray[(j * WIDTH) + screenX] = color;
             }
-            pixelArray[(j * WIDTH) + screenX] = color;
-            texPos += step;
           }
         }
         pixelWriter.setPixels(0,0, WIDTH, HEIGHT, PixelFormat.getIntArgbInstance(), pixelArray, 0, WIDTH);

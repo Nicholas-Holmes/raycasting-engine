@@ -7,7 +7,9 @@ public enum Color{
   PURPLE(3, 0xFFFF00FF),
   BLACK(0, 0xFF000000),
   WHITE(1, 0xFFFFFFFF),
-  RED(2, 0xFFCC0000);
+  RED(2, 0xFFCC0000),
+  GREY(4,0XFFA0A0A0),
+  TEAL(5,0xFF99FFFF);
 
   private final int VALUE;
   private final int KEY;
